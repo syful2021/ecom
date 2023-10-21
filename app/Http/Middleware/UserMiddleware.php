@@ -13,7 +13,7 @@ class UserMiddleware
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    
+
     public function handle($request, Closure $next)
     {
         if (auth()->user() && auth()->user()->role == 'user') {
