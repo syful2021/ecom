@@ -10,13 +10,13 @@
                         </span>
                     </button>
                     <a href="index.html" class="web-logo nav-logo">
-                        <img src="{{ asset('frontend/assets/images/logo/1.png ') }}" class="img-fluid blur-up lazyload" alt="">
+                        <img src="{{ asset('frontend/assets/images/logo/1.png ') }}" class="img-fluid blur-up lazyload"
+                            alt="">
                     </a>
 
                     <div class="middle-box">
                         <div class="location-box">
-                            <button class="btn location-button" data-bs-toggle="modal"
-                                data-bs-target="#locationModal">
+                            <button class="btn location-button" data-bs-toggle="modal" data-bs-target="#locationModal">
                                 <span class="location-arrow">
                                     <i data-feather="map-pin"></i>
                                 </span>
@@ -132,40 +132,69 @@
 
                                         <div class="button-group">
                                             <a href="cart.html" class="btn btn-sm cart-button">View Cart</a>
-                                            <a href="checkout.html" class="btn btn-sm cart-button theme-bg-color
+                                            <a href="checkout.html"
+                                                class="btn btn-sm cart-button theme-bg-color
                                             text-white">Checkout</a>
                                         </div>
                                     </div>
                                 </div>
                             </li>
+
+
+
+                            @if (Route::has('login'))
+
                             <li class="right-side onhover-dropdown">
                                 <div class="delivery-login-box">
                                     <div class="delivery-icon">
-                                        <i data-feather="user"></i>
-                                    </div>
-                                    <div class="delivery-detail">
-                                        <h6>Hello,</h6>
-                                        <h5>My Account</h5>
+                                        <a href="{{ route('admin.dashboard') }}"> <i data-feather="user"></i></a>
                                     </div>
                                 </div>
-
                                 <div class="onhover-div onhover-div-login">
                                     <ul class="user-box-name">
-                                        <li class="product-box-contain">
-                                            <i></i>
-                                            <a href="login.html">Log In</a>
-                                        </li>
+                                        @auth
+                                            @if (auth()->user()->role == 'admin')
+                                                <li class="product-box-contain">
+                                                    <i></i>
+                                                    <a href="{{ route('admin.dashboard') }} "> Dashboard </a>
+                                                </li>
+                                            @else
+                                                <li class="product-box-contain">
+                                                    <i></i>
+                                                    <a href="{{ route('user.dashboard') }}"> Profile </a>
+                                                </li>
+                                            @endif
 
-                                        <li class="product-box-contain">
-                                            <a href="sign-up.html">Register</a>
-                                        </li>
+                                            <li class="product-box-contain">
+                                                <i></i>
+                                                <a href="{{ route('logout') }}"
+                                                    onclick="event.preventDefault();
+                                                                  document.getElementById('logout-form').submit();">
+                                                    Logout </a>
+                                            </li>
+                                        @else
+                                            <li class="product-box-contain">
+                                                <i></i>
+                                                <a href="{{ route('login') }}"> Log In </a>
+                                            </li>
 
-                                        <li class="product-box-contain">
-                                            <a href="forgot.html">Forgot Password</a>
-                                        </li>
+                                            <li class="product-box-contain">
+                                                <a href="{{ route('login') . '#signup' }}">Register</a>
+                                            </li>
+
+                                            {{-- <li class="product-box-contain">
+                                                <a href="forgot.html">Forgot Password</a>
+                                            </li> --}}
+
+                                        @endauth
                                     </ul>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                        class="d-none">
+                                        @csrf
+                                    </form>
                                 </div>
                             </li>
+                        @endif
                         </ul>
                     </div>
                 </div>

@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Admin\AdminController;
 
 /*
@@ -26,6 +27,13 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('admin/dashboard',[AdminController::class, 'admin'])->name('admin.dashboard');
+
+    Route::group(['as' => 'user.', 'prefix' => 'user'], function() {
+        Route::get('list',[AdminUserController::class, 'index'])->name('index');
+
+    } );
+
+
 });
 
 Route::middleware(['auth', 'user'])->group(function () {
