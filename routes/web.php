@@ -30,6 +30,8 @@ Route::middleware(['auth', 'admin'])->group(function () {
 
     Route::group(['as' => 'user.', 'prefix' => 'user'], function() {
         Route::get('list',[AdminUserController::class, 'index'])->name('index');
+        Route::get('create',[AdminUserController::class, 'create'])->name('create');
+        Route::post('store',[AdminUserController::class, 'store'])->name('store');
 
     } );
 

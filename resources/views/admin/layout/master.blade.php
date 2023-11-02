@@ -36,6 +36,16 @@
 
   </head>
 
+
+
+
+
+
+
+
+
+
+
   <body class="nav-md">
     <div class="container body">
       <div class="main_container">
@@ -112,6 +122,9 @@
     <script src="{{ asset('admin/build/js/custom.min.js ')}}"></script>
 
     @stack('js')
+
+
+       
 
   </body>
 </html>
