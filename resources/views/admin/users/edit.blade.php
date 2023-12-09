@@ -1,5 +1,5 @@
 @extends('admin.layout.master')
-@section('title', 'User Create')
+@section('title', 'User Edit')
 
 @section('content')
 
@@ -10,7 +10,7 @@
             <div class="col-md-12 col-sm-12">
                 <div class="x_panel">
                     <div class="x_title">
-                        <h2>Create User</h2>
+                        <h2>Edit User</h2>
                         <ul class="nav navbar-right panel_toolbox">
                             <a class="btn btn-primary btn-sm" href="{{ route('user.index') }}"> {{ _('Back') }}</i></a>
                             <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
@@ -20,7 +20,7 @@
                         <div class="clearfix"></div>
                     </div>
                     <div class="x_content">
-                        <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data"  >
+                        <form action="" method="POST" enctype="multipart/form-data">
                             @csrf
 
                             <div class="field item form-group">
@@ -28,45 +28,21 @@
                                         class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input class="form-control" data-validate-length-range="6" data-validate-words="2"
-                                        name="name" value="{{old('name')}}" placeholder="enter your name" required="required" />
+                                        name="name" value="{{ $user->name }}" placeholder="enter your name"
+                                        required="required" />
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                        {{-- changing part --}}
-
-                                {{-- <label class="col-form-label col-md-3 col-sm-3  label-align">Profile Photo</label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Profile Photo</label>
                                 <div class="col-md-6 col-sm-6">
                                     <input class="form-control" class='optional' name="image" type="file" />
-                                </div> --}}
-
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Changing Profile Photo</label>
-                                <div class="col-md-6 col-sm-6">
-                                    <input type="file" name="image"
-                                    class="form-control @error('image') is-invalid @enderror">
-                                    @error('image')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
                                 </div>
                             </div>
                             <div class="field item form-group">
-                                        {{-- changing part --}}
-
-                                {{-- <label class="col-form-label col-md-3 col-sm-3  label-align">Cover Photo</label>
+                                <label class="col-form-label col-md-3 col-sm-3  label-align">Cover Photo</label>
                                 <div class="col-md-6 col-sm-6">
                                     <input class="form-control" class='optional' name="cover_image" type="file" />
-                                </div> --}}
-
-
-                                <label class="col-form-label col-md-3 col-sm-3  label-align" for="">Changing Cover Photo</label>
-                                <div class="col-md-6 col-sm-6">
-                                    <input type="file" name="image"
-                                    class="form-control @error('image') is-invalid @enderror">
-                                    @error('image')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
                                 </div>
-
-
                             </div>
                             <div class="field item form-group">
                                 <label class="control-label col-md-3 col-sm-3 label-align">Role<span
@@ -74,8 +50,10 @@
                                 <div class="col-md-6 col-sm-6 ">
                                     <select class="form-control" name="role">
                                         <option selected hidden>Select Role</option>
-                                        <option value="admin" {{ (old('role') == 'admin') ? 'selected' : '' }} >Admin</option>
-                                        <option value="user" {{ (old('role') == 'user') ? 'selected' : '' }} >User</option>
+                                        <option value="admin" {{ $user->role == 'admin' ? 'selected' : '' }}>Admin
+                                        </option>
+                                        <option value="user" {{ $user->role == 'user' ? 'selected' : '' }}>User
+                                        </option>
                                     </select>
                                 </div>
                             </div>
@@ -83,8 +61,8 @@
                                 <label class="col-form-label col-md-3 col-sm-3  label-align">Email<span
                                         class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
-                                    <input class="form-control" name="email" value="{{old('email')}}" class='email' required="required"
-                                        type="email" />
+                                    <input class="form-control" name="email" value="{{ $user->email }}" class='email'
+                                        required="required" type="email" />
                                 </div>
                             </div>
                             <div class="field item form-group">
@@ -92,7 +70,6 @@
                                         class="required">*</span></label>
                                 <div class="col-md-6 col-sm-6">
                                     <input class="form-control" type="password" id="password1" name="password"
-
                                         title="Minimum 8 Characters Including An Upper And Lower Case Letter, A Number And A Unique Character"
                                         required />
 
@@ -112,21 +89,48 @@
                                 </div>
                             </div>
 
-                            <div class="field item form-group">
-                                <label class="col-form-label col-md-3 col-sm-3  label-align">Billing Address-1</label>
-                                <div class="col-md-6 col-sm-6 input-group" role="group">
-                                     <input type="text" name="billinig_address[1][billing]" value="{{old('billinig_address*1*billing')}}" class="form-control">
-                                     <span class="btn btn-info m-0 add-billing"> + </span>
-                                </div>
-                           </div>
+                            @php
+                                $count = 0;
+                            @endphp
 
-                           <div class="billing"></div>
+                            @if(!empty(json_decode($user->billing_address)))
+
+                                @foreach(json_decode($user->billing_address) as $key=>$address)
+                                    <div class="field item form-group" id="remove-${$key}">
+                                        <label class="col-form-label col-md-3 col-sm-3  label-align">Billing
+                                            Address-{{$key}}</label>
+                                            <div class="col-md-6 col-sm-6 input-group" role="group">
+                                            <input type="text" name="billinig_address[{{$key}}][billing]"
+                                                value="{{$address->billing}}" class="form-control">
+                                            @if ($key == 1 )
+                                                <span class="btn btn-info m-0 add-billing" data-count=""="">+</span>
+                                            @else
+                                                <span class="btn btn-danger m-0" onclick="removed({{$key}})">x</span>
+
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @else
+                                <div class="field item form-group">
+                                    <label class="col-form-label col-md-3 col-sm-3  label-align">Shipping Address-1</label>
+                                    <div class="col-md-6 col-sm-6 input-group" role="group">
+                                        <input type="text" name="shipping_address[1][shipping]"
+                                            value="" class="form-control">
+                                        <span class="btn btn-info m-0 add-shipping"> + </span>
+                                    </div>
+                                </div>
+                            @endif
+
+
+                            <div class="billing"></div>
 
                             <div class="field item form-group">
                                 <label class="col-form-label col-md-3 col-sm-3  label-align">Shipping Address-1</label>
                                 <div class="col-md-6 col-sm-6 input-group" role="group">
-                                    <input type="text" name="shipping_address[1][shipping]" value="{{old('shipping_address*1*shipping')}}" class="form-control">
-                                     <span class="btn btn-info m-0 add-shipping"> + </span>
+                                    <input type="text" name="shipping_address[1][shipping]"
+                                        value="" class="form-control">
+                                    <span class="btn btn-info m-0 add-shipping"> + </span>
                                 </div>
                             </div>
 
@@ -150,15 +154,14 @@
 
 @push('js')
     <script>
+        // billing
 
-            // billing
-
-        $(document).ready(function(){
+        $(document).ready(function() {
             let count = 1;
-            $('.add-billing').on('click',function(){
+            $('.add-billing').on('click', function() {
                 count++;
                 let result =
-                            `
+                    `
                             <div class="field item form-group" id="remove_b-${count}">
                                 <label class="col-form-label col-md-3 col-sm-3 label-align"> Billing Address-${count}</label>
                                 <div class="col-md-6 col-sm-6 input-group" role="group">
@@ -169,21 +172,22 @@
                             </div>
                             `;
 
-                    $('.billing').append(result);
+                $('.billing').append(result);
             });
         });
+
         function removed_b(count) {
-                $('#remove_b-'+count).remove();
+            $('#remove_b-' + count).remove();
         }
 
-            // Shipping
+        // Shipping
 
-            $(document).ready(function(){
+        $(document).ready(function() {
             let count = 1;
-            $('.add-shipping').on('click',function(){
+            $('.add-shipping').on('click', function() {
                 count++;
                 let result =
-                            `
+                    `
                             <div class="field item form-group" id="remove-${count}">
                                 <label class="col-form-label col-md-3 col-sm-3 label-align"> Shipping Address-${count}</label>
                                 <div class="col-md-6 col-sm-6 input-group" role="group">
@@ -194,12 +198,12 @@
                             </div>
                             `;
 
-                    $('.shipping').append(result);
+                $('.shipping').append(result);
             });
         });
-        function removed(count) {
-                $('#remove-'+count).remove();
-        }
 
+        function removed(count) {
+            $('#remove-' + count).remove();
+        }
     </script>
 @endpush

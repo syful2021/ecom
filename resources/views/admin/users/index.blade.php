@@ -47,15 +47,31 @@
                   </thead>
                   <tbody>
                     @foreach ($users as $user )
+
+                    {{-- @if ($user->id == 11)
+                    {{dd(json_decode($user->billing_address))}}
+
+                    @endif --}}
+                    
                         <tr>
                             <td>{{$loop->iteration}}</td>
                             <td>{{$user->name}}</td>
-                            <td>Cover Photo</td>
-                            <td>Profile Photo</td>
+                            <td >
+                                <img src="{{ asset('storage/'.$user->cover_image) }}
+                                " alt="{{__('cover photo')}}" height="40px" width="40px">
+                            </td>
+                            <td>
+                                <img src="{{asset('storage/'.$user->image)}}" alt="{{__('photo')}}" height="40px" width="40px">
+                            </td>
                             <td>{{$user->role}}</td>
                             <td>{{$user->email}}</td>
-                            <td>Status</td>
-                            <td>Action</td>
+
+                            <td>
+                                <a href="{{route('user.status',$user->id)}}" class="btn btn-sm {{$user->status == 1 ? 'btn-danger' : 'btn btn-success'}}">{{$user->status == 1 ? 'Deactive' : 'Active'}}</a>
+                            </td>
+                            <td>
+                                <a href="{{route('user.edit', $user->id)}}" class="btn btn-outline-info btn-sm">Edit</a>
+                            </td>
                         </tr>
                     @endforeach
                   </tbody>
